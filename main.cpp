@@ -12,6 +12,7 @@
 #include <QScopedPointer>
 #include <QElapsedTimer>
 #include "qpointertest.h"
+#include "qscopedptrtest.h"
 
 QRandomGenerator64 randomGenerator;
 
@@ -129,7 +130,22 @@ void testComputerInfo()
     qDebug() << "int8" << value4;
 }
 
+void usescopedptr(qscopedptrtest* obj)
+{
+    if(!obj)
+    {
+        return;
+    }
+    // qInfo() << "Using" << obj;
+}
 
+void scopedptrdostuff()
+{
+    //    qscopedptrtest *t = new qscopedptrtest(); // creates dangling pointer
+    QScopedPointer<qscopedptrtest> mypointer(new qscopedptrtest());
+    usescopedptr(mypointer.data());
+    //pointer gets deleted out of scope
+}
 
 int main(int argc, char *argv[])
 {
@@ -139,6 +155,12 @@ int main(int argc, char *argv[])
     timer.start();
     qpointertestfunct();
     cacheTests();
+
+    for(int i = 0; i < 100; i++)
+    {
+        scopedptrdostuff();
+    }
+
 
     hashTests();
     qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";

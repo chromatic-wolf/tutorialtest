@@ -3,10 +3,10 @@
 
 qscopedptrtest::qscopedptrtest(QObject *parent) : QObject(parent)
 {
-    qInfo() << "Constructed" << this;
+   // qInfo() << "Constructed" << this;
 }
 
 qscopedptrtest::~qscopedptrtest()
 {
-    qInfo() << "Deconstructed" << this;
+    //qInfo() << "Deconstructed" << this;
 }

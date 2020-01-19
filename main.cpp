@@ -16,6 +16,9 @@
 #include <qmutex.h>
 #include <QIODevice>
 #include <QBuffer>
+#include "qdirtest.h"
+#include <QDir>
+
 
 QRandomGenerator64 randomGenerator;
 
@@ -107,18 +110,8 @@ void cacheTests()
 }
 
 void testComputerInfo()
-{
-    QTime threadedTimer;
-    QTime nonThreadedTimer;
-
-    nonThreadedTimer.start();
+{  
     sysInfo* myPc = new sysInfo;
-    qDebug() <<"Non Threaded: " << nonThreadedTimer.elapsed();
-
-    threadedTimer.start();
-    //sysInfo* myPc2 = new sysInfo(true);
-    qDebug() << "Threaded: " << threadedTimer.elapsed();
-
     myPc->printAll();
     delete myPc;
     //delete myPc2;
@@ -171,6 +164,53 @@ void qbuffertest()
     }
 }
 
+void testqdir()
+{
+    qdirtest dir;
+    QString path = QDir::currentPath();
+    QString test = path  + QDir::separator() + "test";
+    QString tmp = path  + QDir::separator() + "tmp";
+    QDir current(QDir::currentPath());
+
+
+    qInfo() << path;
+    qInfo() << test;
+    qInfo() << tmp;
+
+
+
+
+    if(current.exists())
+    {
+        foreach(QFileInfo fi, current.entryInfoList())
+        {
+            qInfo() << fi.fileName();
+        }
+    }
+
+    if(dir.createDir(test))
+    {
+        qInfo() << "Dir created";
+
+        if(dir.renameDir(test, tmp))
+        {
+            qInfo() << "Dir renamed";
+
+            if(dir.removeDirRecursive(tmp))
+            {
+                qInfo() << "Dir removed";
+            }else {
+                qInfo() << "Cant delete dir";
+            }
+
+        }else {
+            qInfo() << "Cant rename dir";
+        }
+
+    }
+
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -185,6 +225,7 @@ int main(int argc, char *argv[])
     }
     qbuffertest();
     hashTests();
+    testqdir();
 
     qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";
     system("pause");

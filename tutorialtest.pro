@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
+        qdirtest.cpp \
         qpointertest.cpp \
         qscopedptrtest.cpp
 
@@ -26,5 +27,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    qdirtest.h \
     qpointertest.h \
     qscopedptrtest.h

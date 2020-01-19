@@ -13,6 +13,9 @@
 #include <QElapsedTimer>
 #include "qpointertest.h"
 #include "qscopedptrtest.h"
+#include <qmutex.h>
+#include <QIODevice>
+#include <QBuffer>
 
 QRandomGenerator64 randomGenerator;
 
@@ -147,6 +150,27 @@ void scopedptrdostuff()
     //pointer gets deleted out of scope
 }
 
+void qbuffertest()
+{
+    QBuffer buffer;
+    if(buffer.open(QIODevice::ReadWrite))
+    {
+        QByteArray data("Hello test");
+
+        for(int i = 0; i < 5; i++)
+        {
+            buffer.write(data);
+            buffer.write("\r\n");
+        }
+        //moved to first position
+        buffer.seek(0);
+        buffer.close();
+
+    }else {
+        qInfo() << "Error buffer could not be opened";
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -155,14 +179,13 @@ int main(int argc, char *argv[])
     timer.start();
     qpointertestfunct();
     cacheTests();
-
     for(int i = 0; i < 100; i++)
     {
         scopedptrdostuff();
     }
-
-
+    qbuffertest();
     hashTests();
+
     qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";
     system("pause");
     exit(EXIT_SUCCESS);
